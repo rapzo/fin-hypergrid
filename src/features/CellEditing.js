@@ -33,7 +33,11 @@ var CellEditing = Feature.extend('CellEditing', {
     },
 
     isEditChar: function(char, event) {
-        return (char === KEYS.F2 || char === KEYS.RETURN || char === KEYS.RETURNSHIFT);
+        return char === KEYS.F2;
+    },
+
+    isReturnChar: function(char, event) {
+        return (char === KEYS.RETURN || char === KEYS.RETURNSHIFT);
     },
 
     /**
@@ -74,10 +78,12 @@ var CellEditing = Feature.extend('CellEditing', {
             isSpaceChar = this.isSpaceChar(char, event),
             isDeleteChar = this.isDeleteChar(char, event),
             isEditChar = this.isEditChar(char, event),
-            isValidChar = !!(isVisibleChar || isSpaceChar || isDeleteChar || isEditChar),
+            isReturnChar = this.isReturnChar(char, event),
+            isValidChar = !!(isVisibleChar || isSpaceChar || isDeleteChar || isEditChar || isReturnChar),
             cellEvent = grid.getGridCellFromLastSelection(),
             isEditable = (cellEvent && cellEvent.properties.editOnKeydown && !grid.cellEditor),
             editor;
+
 
         if (isEditable && isValidChar) {
             editor = grid.onEditorActivate(cellEvent);
@@ -88,6 +94,8 @@ var CellEditing = Feature.extend('CellEditing', {
                 } else if (isDeleteChar) {
                     editor.setEditorValue('');
                 }
+
+                editor.setWasOpenedByReturnKey(isReturnChar);
                 event.detail.primitiveEvent.preventDefault();
             }
         } else if (this.next) {

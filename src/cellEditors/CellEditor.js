@@ -107,10 +107,19 @@ var CellEditor = Base.extend('CellEditor', {
             feedbackCount = cellProps.feedbackCount,
             keyChar = grid.canvas.getKeyChar(e),
             specialKeyup,
-            stopped;
+            stopped,
+            ignore = false;
+
+
+        // STEP 0: Ignore the first keyup event for RETURN or RETURNSHIFT keys, if the editor was
+        // opened by a RETURN or RETURNSHIFT keydown event
+        if (this.wasOpenedByReturnKey && this.isReturnKey(keyChar)) {
+            this.wasOpenedByReturnKey = false;
+            ignore = true;
+        }
 
         // STEP 1: Call the special key handler as needed
-        if (
+        if (!ignore &&
             (specialKeyup = this.specialKeyups[e.keyCode]) &&
             (stopped = this[specialKeyup](feedbackCount))
         ) {
@@ -118,7 +127,7 @@ var CellEditor = Base.extend('CellEditor', {
         }
 
         // STEP 2: If this is a possible "nav key" consumable by CellSelection#handleKeyDown, try to stop editing and send it along
-        if (cellProps.mappedNavKey(keyChar, e.ctrlKey)) {
+        if (!ignore && cellProps.mappedNavKey(keyChar, e.ctrlKey)) {
             if (
                 !specialKeyup &&
                 // We didn't try to stop editing above so try to stop it now
@@ -148,6 +157,32 @@ var CellEditor = Base.extend('CellEditor', {
         this.grid.fireSyntheticEditorKeyUpEvent(this, e);
 
         return stopped;
+    },
+
+    /**
+     * @summary Is a RETURN or RETURNSHIFT key?
+     * @memberOf CellEditor.prototype
+     * @param {string} keyChar
+     * @return {boolean}
+     */
+    isReturnKey: function(keyChar) {
+        return !!(keyChar === 'RETURN' || keyChar === 'RETURNSHIFT');
+    },
+
+    /**
+     * @summary whether the editor was opened by a RETURN or RETURNSHIFT key down event
+     * @type {boolean}
+     * @default false
+     * @memberOf CellEditor.prototype
+     */
+    wasOpenedByReturnKey: false,
+
+    /**
+     * @summary Set this.wasOpenedByReturnKey
+     * @memberOf CellEditor.prototype
+     */
+    setWasOpenedByReturnKey: function(val) {
+        this.wasOpenedByReturnKey = !!val;
     },
 
     /**

@@ -930,6 +930,18 @@ var defaults = {
     editOnKeydown: true,
 
     /**
+     * Grid-level property.
+     * Override the "navKeyMap" logic that lets users navigate with RETURN AND RETURNSHIFT if the
+     * editOnKeydown property is also true. If editOnReturnKeydown is true, it will be treated as
+     * any other normal character and open the editor, without changing the contents
+     *
+     * @default
+     * @type {boolean}
+     * @memberOf module:defaults
+     */
+    editOnReturnKeydown: false,
+
+    /**
      * @summary Open cell editor when cell selected via keyboard navigation.
      * @desc Keyboard navigation always includes:
      * 1. The four arrow keys -- but only when there is no active text cell editor open
