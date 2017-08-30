@@ -326,6 +326,9 @@ var CellEditor = Base.extend('CellEditor', {
         this.grid.cellEditor = null;
         this.el.remove();
 
+        // stay focused in canvas
+        this.grid.takeFocus();
+
         return true;
     },
 
