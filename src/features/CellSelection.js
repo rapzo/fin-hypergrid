@@ -39,6 +39,34 @@ var CellSelection = Feature.extend('CellSelection', {
     sbAutoStart: 0,
 
     /**
+     * Is `editOnReturnKeydown` property set as true?
+     * @param  {object} cellEvent
+     * @return {boolean} Is property true?
+     */
+    isEditOnReturnKeydown: function(cellEvent) {
+        return !!(cellEvent && cellEvent.properties.editOnReturnKeydown);
+    },
+
+    /**
+     * Is the key event for a simple RETURN or RETURNSHIFT keydown?
+     * @param  {string} isCtrl
+     * @param  {boolean} isCtrl
+     * @return {boolean} Is a RETURN key?
+     */
+    isReturnKey: function(char, isCtrl) {
+        return !!((char === 'RETURN' || char === 'RETURNSHIFT') && !isCtrl);
+    },
+
+    /**
+     * Is a 'fin-canvas-keydown' event?
+     * @param  {object} event
+     * @return {boolean} Is set?
+     */
+    isCanvasKeyDownEvent: function(event) {
+        return event.type === 'fin-canvas-keydown';
+    },
+
+    /**
      * @memberOf CellSelection.prototype
      * @param {Hypergrid} grid
      * @param {Object} event - the event details
@@ -103,6 +131,14 @@ var CellSelection = Feature.extend('CellSelection', {
             ),
             handler = this['handle' + navKey];
 
+        // STEP 0: bypass RETURN and RETURNSHIFT keydown events if `editOnReturnKeydown` is true
+        if (
+            this.isEditOnReturnKeydown(cellEvent) &&
+            this.isReturnKey(detail.char, detail.ctrl) &&
+            this.isCanvasKeyDownEvent(event)
+        ) {
+            handler = null;
+        }
 
         // STEP 1: Move the selection
         if (handler) {
