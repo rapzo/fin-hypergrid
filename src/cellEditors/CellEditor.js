@@ -430,6 +430,15 @@ var CellEditor = Base.extend('CellEditor', {
     },
 
     /**
+     * @summary Is the editor focused?
+     * @return {boolean} Whether the editor is focused
+     * @memberOf CellEditor.prototype
+     */
+    hasFocus: function() {
+        return !!(this.input && document.activeElement === this.input);
+    },
+
+    /**
      * @summary Request focus for my input control.
      * @desc See GRID-95 "Scrollbar moves inward" for issue and work-around explanation.
      * @memberOf CellEditor.prototype
