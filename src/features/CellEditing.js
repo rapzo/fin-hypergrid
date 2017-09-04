@@ -18,28 +18,6 @@ var KEYS = {
  */
 var CellEditing = Feature.extend('CellEditing', {
 
-    isVisibleChar: function(char, event) {
-        return !!(
-            (char.length === 1) && !(event.detail.meta || event.detail.ctrl)
-        );
-    },
-
-    isSpaceChar: function(char, event) {
-        return char === KEYS.SPACE;
-    },
-
-    isDeleteChar: function(char, event) {
-        return (char === KEYS.DELETE || char === KEYS.BACKSPACE);
-    },
-
-    isEditChar: function(char, event) {
-        return char === KEYS.F2;
-    },
-
-    isReturnChar: function(char, event) {
-        return (char === KEYS.RETURN || char === KEYS.RETURNSHIFT);
-    },
-
     /**
      * @memberOf CellEditing.prototype
      * @param {Hypergrid} grid
@@ -74,23 +52,24 @@ var CellEditing = Feature.extend('CellEditing', {
      */
     handleKeyDown: function(grid, event) {
         var char = event.detail.char,
-            isVisibleChar = this.isVisibleChar(char, event),
-            isSpaceChar = this.isSpaceChar(char, event),
-            isDeleteChar = this.isDeleteChar(char, event),
-            isEditChar = this.isEditChar(char, event),
-            isReturnChar = this.isReturnChar(char, event),
-            isValidChar = !!(isVisibleChar || isSpaceChar || isDeleteChar || isEditChar || isReturnChar),
             cellEvent = grid.getGridCellFromLastSelection(),
-            isEditable = (cellEvent && cellEvent.properties.editOnKeydown && !grid.cellEditor),
+            isEditable = cellEvent && cellEvent.properties.editOnKeydown && !grid.cellEditor,
+            isVisibleChar = char.length === 1 && !(event.detail.meta || event.detail.ctrl),
+            isSpaceChar = char === KEYS.SPACE,
+            isDeleteChar = char === KEYS.DELETE || char === KEYS.BACKSPACE,
+            isEditChar = char === KEYS.F2,
+            isReturnChar = char === KEYS.RETURN || char === KEYS.RETURNSHIFT,
+            isValidChar = isVisibleChar || isSpaceChar || isDeleteChar || isEditChar || isReturnChar,
             editor;
-
 
         if (isEditable && isValidChar) {
             editor = grid.onEditorActivate(cellEvent);
 
             if (editor instanceof CellEditor) {
-                if (isVisibleChar || isSpaceChar) {
-                    editor.input.value = isSpaceChar ? ' ' : char;
+                if (isSpaceChar) {
+                    editor.input.value = ' ';
+                } else if (isVisibleChar) {
+                    editor.input.value = char;
                 } else if (isDeleteChar) {
                     editor.setEditorValue('');
                 }
