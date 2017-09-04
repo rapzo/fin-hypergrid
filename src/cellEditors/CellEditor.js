@@ -430,6 +430,24 @@ var CellEditor = Base.extend('CellEditor', {
     },
 
     /**
+     * Validate editor value using localizer.invalid (if present) and by trying to retrieve the cell value
+     * @returns {boolean|string} Truthy value means invalid. If a string, this will be an error message. If not a string, it merely indicates a generic invalid result.
+     */
+    validate: function() {
+        var error = this.validateEditorValue();
+
+        if (!error) {
+            try {
+                this.getEditorValue();
+            } catch (err) {
+                error = err;
+            }
+        }
+
+        return error;
+    },
+
+    /**
      * @summary Is the editor focused?
      * @return {boolean} Whether the editor is focused
      * @memberOf CellEditor.prototype

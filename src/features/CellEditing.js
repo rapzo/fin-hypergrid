@@ -53,7 +53,8 @@ var CellEditing = Feature.extend('CellEditing', {
     handleKeyDown: function(grid, event) {
         var char = event.detail.char,
             cellEvent = grid.getGridCellFromLastSelection(),
-            isEditable = cellEvent && cellEvent.properties.editOnKeydown && !grid.cellEditor,
+            props = (cellEvent && cellEvent.properties) || {},
+            isEditable = props.editOnKeydown && !grid.cellEditor,
             isVisibleChar = char.length === 1 && !(event.detail.meta || event.detail.ctrl),
             isSpaceChar = char === KEYS.SPACE,
             isDeleteChar = char === KEYS.DELETE || char === KEYS.BACKSPACE,
@@ -72,6 +73,12 @@ var CellEditing = Feature.extend('CellEditing', {
                     editor.input.value = char;
                 } else if (isDeleteChar) {
                     editor.setEditorValue('');
+
+                    // quick cell content delete (if not errors were found)
+                    if (props.deleteWithoutEditor && !editor.validate()) {
+                        editor.stopEditing();
+                        grid.repaint();
+                    }
                 }
 
                 editor.setWasOpenedByReturnKey(isReturnChar);

@@ -1258,7 +1258,15 @@ var defaults = {
      * @default
      * @memberOf module:defaults
      */
-    truncateTextWithEllipsis: true
+    truncateTextWithEllipsis: true,
+
+    /**
+     * @summary Quick delete cell contents without focusing in cell editor (unless a validation error occurs)
+     * @type {boolean}
+     * @default
+     * @memberOf module:defaults
+     */
+    deleteWithoutEditor: false
 };
 
 /** @typedef {string} cssColor
