@@ -399,14 +399,18 @@ var CellEditor = Base.extend('CellEditor', {
     takeFocus: function() {
         var el = this.el,
             leftWas = el.style.left,
-            topWas = el.style.top;
+            topWas = el.style.top,
+            cellProps = this.event.properties;
 
         el.style.left = el.style.top = 0; // work-around: move to upper left
 
         var x = window.scrollX, y = window.scrollY;
         this.input.focus();
         window.scrollTo(x, y);
-        this.selectAll();
+
+        if (cellProps.selectAllOnEditorFocus) {
+            this.selectAll();
+        }
 
         el.style.left = leftWas;
         el.style.top = topWas;

@@ -1226,7 +1226,15 @@ var defaults = {
      * @default
      * @memberOf module:defaults
      */
-    truncateTextWithEllipsis: true
+    truncateTextWithEllipsis: true,
+
+    /**
+     * @summary When opening a new editor (or taking focus) select all content (otherwise, use browser default focus behaviour)
+     * @type {Boolean}
+     * @default
+     * @memberOf module:defaults
+     */
+    selectAllOnEditorFocus: true
 };
 
 /** @typedef {string} cssColor
