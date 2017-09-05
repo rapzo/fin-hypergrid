@@ -20,11 +20,15 @@ var Combo = CellEditor.extend('Combo', {
      * @desc request focus for my input control
      */
     takeFocus: function() {
-        var self = this;
-        setTimeout(function() {
-            //self.input.focus();
-            self.selectAll();
-        }, 300);
+        var cellProps = this.event.properties,
+            self = this;
+
+        if (cellProps.selectAllOnEditorFocus) {
+            setTimeout(function() {
+                //self.input.focus();
+                self.selectAll();
+            }, 300);
+        }
     },
 
     /**
