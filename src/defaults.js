@@ -1226,7 +1226,15 @@ var defaults = {
      * @default
      * @memberOf module:defaults
      */
-    truncateTextWithEllipsis: true
+    truncateTextWithEllipsis: true,
+
+    /**
+     * @summary Keep the editor open with the current value, even if the user triggers a data update with setData()
+     * @type {Boolean}
+     * @default
+     * @memberOf module:defaults
+     */
+    keepEditorOpenOnSetData: false
 };
 
 /** @typedef {string} cssColor

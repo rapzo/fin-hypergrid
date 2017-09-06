@@ -199,7 +199,7 @@ var JSON = Behavior.extend('behaviors.JSON', {
             }
         });
 
-        if (grid.cellEditor) {
+        if (!grid.properties.keepEditorOpenOnSetData && grid.cellEditor) {
             grid.cellEditor.cancelEditing();
         }
 
