@@ -67,6 +67,7 @@ var CellEditor = Base.extend('CellEditor', {
         this.el = container.firstChild;
 
         this.input = this.el;
+        this.setEditorValue(this.initialValue);
 
         this.errors = 0;
 
@@ -440,7 +441,6 @@ var CellEditor = Base.extend('CellEditor', {
         if (this.checkEditorPositionFlag) {
             this.checkEditorPositionFlag = false;
             if (this.event.isCellVisible) {
-                this.setEditorValue(this.initialValue);
                 this.attachEditor();
                 this.moveEditor();
                 this.showEditor();
