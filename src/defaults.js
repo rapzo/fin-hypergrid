@@ -1270,11 +1270,19 @@ var defaults = {
 
     /**
      * @summary When opening a new editor (or taking focus) select all content (otherwise, use browser default focus behaviour)
-     * @type {Boolean}
+     * @type {boolean}
      * @default
      * @memberOf module:defaults
      */
-    selectAllOnEditorFocus: true
+    selectAllOnEditorFocus: true,
+
+    /**
+     * @summary Keep the editor open with the current value, even if the user triggers a data update with setData()
+     * @type {boolean}
+     * @default
+     * @memberOf module:defaults
+     */
+    keepEditorOpenOnSetData: false
 };
 
 /** @typedef {string} cssColor
