@@ -77,6 +77,7 @@ var CellEditing = Feature.extend('CellEditing', {
                     // quick cell content delete (if not errors were found)
                     if (props.deleteWithoutEditor && !editor.validate()) {
                         editor.stopEditing();
+                        grid.canvas.takeFocus();
                         grid.repaint();
                     }
                 }
