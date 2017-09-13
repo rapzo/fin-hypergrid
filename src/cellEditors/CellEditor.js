@@ -122,6 +122,7 @@ var CellEditor = Base.extend('CellEditor', {
         // STEP 1: Call the special key handler as needed
         if (!ignore &&
             (specialKeyup = this.specialKeyups[e.keyCode]) &&
+            !e.ctrlKey && !e.metaKey && !e.altKey &&
             (stopped = this[specialKeyup](feedbackCount))
         ) {
             grid.repaint();
@@ -476,6 +477,8 @@ var CellEditor = Base.extend('CellEditor', {
 
         if (cellProps.selectAllOnEditorFocus) {
             this.selectAll();
+        } else {
+            this.moveCaretToEnd()
         }
 
         el.style.left = leftWas;
@@ -487,6 +490,13 @@ var CellEditor = Base.extend('CellEditor', {
      * @desc select everything
      */
     selectAll: nullPattern,
+
+    /**
+     * Move caret to the last position of input (textarea, div, etc)
+     * @memberOf CellEditor.prototype
+     * @desc select everything
+     */
+    moveCaretToEnd: nullPattern,
 
     /**
      * @memberOf CellEditor.prototype
