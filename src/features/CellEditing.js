@@ -61,16 +61,24 @@ var CellEditing = Feature.extend('CellEditing', {
             isEditChar = char === KEYS.F2,
             isReturnChar = char === KEYS.RETURN || char === KEYS.RETURNSHIFT,
             isValidChar = isVisibleChar || isSpaceChar || isDeleteChar || isEditChar || isReturnChar,
-            editor;
+            editor,
+            value;
 
         if (isEditable && isValidChar) {
             editor = grid.onEditorActivate(cellEvent);
 
             if (editor instanceof CellEditor) {
-                if (isSpaceChar) {
-                    editor.input.value = ' ';
-                } else if (isVisibleChar) {
-                    editor.input.value = char;
+                if (isSpaceChar || isVisibleChar) {
+                    value = editor.getEditorValue();
+                    value += isSpaceChar ? ' ' : char;
+                    editor.setEditorValue(value);
+
+                    if (props.selectAllOnEditorFocus) {
+                        editor.selectAll();
+                    } else {
+                        editor.moveCaretToEnd();
+                    }
+
                 } else if (isDeleteChar) {
                     editor.setEditorValue('');
 
