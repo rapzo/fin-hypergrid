@@ -309,7 +309,7 @@ var CellEditor = Base.extend('CellEditor', {
         if (!error) {
             this.hideEditor();
             this.grid.cellEditor = null;
-            this.el.remove();
+            this.destroy();
         } else if (feedback >= 0) { // false when `feedback` undefined
             this.errorEffectBegin(++this.errors % feedback === 0 && error);
         } else { // invalid but no feedback
@@ -326,12 +326,20 @@ var CellEditor = Base.extend('CellEditor', {
         this.setEditorValue(this.initialValue);
         this.hideEditor();
         this.grid.cellEditor = null;
-        this.el.remove();
+        this.destroy();
 
         // stay focused in canvas
         this.grid.takeFocus();
 
         return true;
+    },
+
+    /**
+     * Remove input element from DOM (events associated to the element should be also be removed)
+     * @memberOf CellEditor.prototype
+     */
+    destroy() {
+        this.el.remove();
     },
 
     /**
