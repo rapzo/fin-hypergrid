@@ -381,7 +381,8 @@ Canvas.prototype = {
         if (this.isDragging() || !this.hasFocus()) {
             return;
         }
-        e.preventDefault();
+        // @TODO must check with @joneit if this is really needed
+        // e.preventDefault();
         this.dispatchNewMouseKeysEvent(e, 'fin-canvas-wheelmoved', {
             isRightClick: this.isRightClick(e)
         });
