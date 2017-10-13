@@ -481,11 +481,6 @@ module.exports = {
                 self.fireSyntheticContextMenuEvent(mouseEvent);
             });
         });
-
-        //Register a listener for the copy event so we can copy our selected region to the pastebuffer if conditions are right.
-        document.body.addEventListener('copy', function(evt) {
-            self.checkClipboardCopy(evt);
-        });
     },
 
     /**

@@ -149,10 +149,14 @@ var Hypergrid = Base.extend('Hypergrid', {
         document.addEventListener('mousedown', this.mouseCatcher = function() {
             this.abortEditing();
         }.bind(this));
+
+        //Register a listener for the copy event so we can copy our selected region to the pastebuffer if conditions are right.
+        document.body.addEventListener('copy', this.checkClipboardCopy);
     },
 
     terminate: function() {
         document.removeEventListener('mousedown', this.mouseCatcher);
+        document.body.removeEventListener('copy', this.checkClipboardCopy);
     },
 
     registerCellEditor: function(Constructor, name) {
