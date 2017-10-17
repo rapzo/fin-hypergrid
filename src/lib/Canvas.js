@@ -341,6 +341,24 @@ Canvas.prototype = {
     },
 
     finmousedown: function(e) {
+        // remove special keys from the current keys
+        const SHIFT_KEY = !e.shiftKey ? charMap[16] : [],
+            CTRL_KEY = !e.ctrlKey ? charMap[17] : [],
+            ALT_KEY = !e.altKey ? charMap[18] : [],
+            META_KEY_1 = !e.metaKey ? charMap[91] : [],
+            META_KEY_2 = !e.metaKey ? charMap[93] : [];
+
+        const keysToRemove = SHIFT_KEY.concat(CTRL_KEY, ALT_KEY, META_KEY_1, META_KEY_2);
+
+        keysToRemove.forEach(function(key) {
+            const keyFound = this.currentKeys.indexOf(key);
+
+            if (keyFound !== -1) {
+                this.currentKeys.splice(keyFound, 1);
+            }
+        });
+
+        // common behaviour
         this.mouseLocation = this.mouseDownLocation = this.getLocal(e);
         this.mousedown = true;
 
@@ -431,10 +449,6 @@ Canvas.prototype = {
     },
 
     finkeydown: function(e) {
-        if (!this.hasFocus()) {
-            return;
-        }
-
         // prevent TAB from moving focus off the canvas element
         if (e.keyCode === 9) {
             e.preventDefault();
@@ -473,10 +487,6 @@ Canvas.prototype = {
     },
 
     finkeyup: function(e) {
-        if (!this.hasFocus()) {
-            return;
-        }
-
         // prevent TAB from moving focus off the canvas element
         if (e.keyCode === 9) {
             e.preventDefault();
