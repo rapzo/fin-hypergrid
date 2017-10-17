@@ -45,6 +45,10 @@ var CellEditing = Feature.extend('CellEditing', {
         }
     },
 
+    isDeleteChar: function(char, event) {
+        return (char === KEYS.DELETE || char === KEYS.BACKSPACE);
+    },
+
     /**
      * @param {Hypergrid} grid
      * @param {Object} event - the event details
@@ -57,7 +61,7 @@ var CellEditing = Feature.extend('CellEditing', {
             isEditable = props.editOnKeydown && !grid.cellEditor,
             isVisibleChar = char.length === 1 && !(event.detail.meta || event.detail.ctrl),
             isSpaceChar = char === KEYS.SPACE,
-            isDeleteChar = char === KEYS.DELETE || char === KEYS.BACKSPACE,
+            isDeleteChar = this.isDeleteChar(char, event),
             isEditChar = char === KEYS.F2,
             isReturnChar = char === KEYS.RETURN || char === KEYS.RETURNSHIFT,
             isValidChar = isVisibleChar || isSpaceChar || isDeleteChar || isEditChar || isReturnChar,
@@ -78,13 +82,6 @@ var CellEditing = Feature.extend('CellEditing', {
 
                 } else if (isDeleteChar) {
                     editor.setEditorValue('');
-
-                    // quick cell content delete (if not errors were found)
-                    if (props.deleteWithoutEditor && !editor.validate()) {
-                        editor.stopEditing();
-                        grid.canvas.takeFocus();
-                        grid.repaint();
-                    }
                 }
 
                 editor.setWasOpenedByReturnKey(isReturnChar);
