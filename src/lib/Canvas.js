@@ -348,13 +348,16 @@ Canvas.prototype = {
             META_KEY_1 = !e.metaKey ? charMap[91] : [],
             META_KEY_2 = !e.metaKey ? charMap[93] : [];
 
-        const keysToRemove = SHIFT_KEY.concat(CTRL_KEY, ALT_KEY, META_KEY_1, META_KEY_2);
+        const keysToRemove = this.currentKeys && this.currentKeys.length
+            ? SHIFT_KEY.concat(CTRL_KEY, ALT_KEY, META_KEY_1, META_KEY_2)
+            : [];
 
+        const self = this;
         keysToRemove.forEach(function(key) {
-            const keyFound = this.currentKeys.indexOf(key);
+            const keyFound = self.currentKeys.indexOf(key);
 
             if (keyFound !== -1) {
-                this.currentKeys.splice(keyFound, 1);
+                self.currentKeys.splice(keyFound, 1);
             }
         });
 
