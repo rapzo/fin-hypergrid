@@ -452,6 +452,14 @@ Canvas.prototype = {
     },
 
     finkeydown: function(e) {
+        if (this.currentKeys.indexOf(keyChar) === -1) {
+          this.currentKeys.push(keyChar);
+        }
+
+        if (!this.hasFocus()) {
+            return;
+        }
+
         // prevent TAB from moving focus off the canvas element
         if (e.keyCode === 9) {
             e.preventDefault();
@@ -470,9 +478,6 @@ Canvas.prototype = {
             this.repeatKeyCount = 0;
             this.repeatKeyStartTime = 0;
         }
-        if (this.currentKeys.indexOf(keyChar) === -1) {
-            this.currentKeys.push(keyChar);
-        }
 
         this.dispatchNewEvent(e, 'fin-canvas-keydown', {
             alt: e.altKey,
@@ -490,13 +495,18 @@ Canvas.prototype = {
     },
 
     finkeyup: function(e) {
+        var keyChar = this.getKeyChar(e);
+        this.currentKeys.splice(this.currentKeys.indexOf(keyChar), 1);
+
+        if (!this.hasFocus()) {
+            return;
+        }
+
         // prevent TAB from moving focus off the canvas element
         if (e.keyCode === 9) {
             e.preventDefault();
         }
 
-        var keyChar = this.getKeyChar(e);
-        this.currentKeys.splice(this.currentKeys.indexOf(keyChar), 1);
         this.repeatKeyCount = 0;
         this.repeatKey = null;
         this.repeatKeyStartTime = 0;
