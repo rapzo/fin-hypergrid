@@ -317,7 +317,6 @@ Canvas.prototype = {
 
     finmousemove: function(e) {
         var currentMouseLocation = this.getLocal(e);
-        // var hasMoved = !(this.mouseLocation.x === currentMouseLocation.x && this.mouseLocation.y === currentMouseLocation.y);
 
         if (!this.isDragging() && this.mousedown) {
             this.beDragging();
