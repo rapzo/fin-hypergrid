@@ -317,9 +317,8 @@ Canvas.prototype = {
 
     finmousemove: function(e) {
         var currentMouseLocation = this.getLocal(e);
-        var hasMoved = !(this.mouseLocation.x === currentMouseLocation.x && this.mouseLocation.y === currentMouseLocation.y);
 
-        if (!this.isDragging() && this.mousedown && hasMoved && !this.doubleClickDetected) {
+        if (!this.isDragging() && this.mousedown) {
             this.beDragging();
             this.dispatchNewMouseKeysEvent(e, 'fin-canvas-dragstart', {
                 isRightClick: this.isRightClick(e),
@@ -375,25 +374,46 @@ Canvas.prototype = {
     },
 
     finmouseup: function(e) {
-        if(this.doubleClickDetected) {
-          this.doubleClickDetected = false;
+        const doubleClickDetected = this.doubleClickDetected;
+        const isDragging = this.isDragging();
+
+        // Send main actions events
+        if(doubleClickDetected && !isDragging) {
           this.findblclick(e);
-        } else if (this.isDragging()) {
+
+        } else if (!this.doubleClickDetected && this.isDragging()) {
           this.dispatchNewMouseKeysEvent(e, 'fin-canvas-dragend', {
             dragstart: this.dragstart,
             isRightClick: this.isRightClick(e)
           });
+
+        }
+
+        // send mouse up events with details
+        var finCanvasMouseupDetails = (doubleClickDetected && isDragging)
+          ? {
+            dragstart: this.dragstart,
+            isRightClick: this.isRightClick(e),
+            executeDblClick: this.findblclick.bind(this, e)
+          } : {
+            dragstart: this.dragstart,
+            isRightClick: this.isRightClick(e)
+          };
+
+        this.dispatchNewMouseKeysEvent(e, 'fin-canvas-mouseup', finCanvasMouseupDetails);
+        //this.mouseLocation = new rectangular.Point(-1, -1);
+
+        // Cleanup control vars
+        this.mousedown = false;
+
+        if (doubleClickDetected) {
+            this.doubleClickDetected = false;
+        }
+
+        if (isDragging) {
           this.beNotDragging();
           this.dragEndtime = Date.now();
         }
-
-        this.mousedown = false;
-
-        this.dispatchNewMouseKeysEvent(e, 'fin-canvas-mouseup', {
-            dragstart: this.dragstart,
-            isRightClick: this.isRightClick(e)
-        });
-        //this.mouseLocation = new rectangular.Point(-1, -1);
     },
 
     finmouseout: function(e) {
