@@ -84,9 +84,6 @@ function Canvas(div, component) {
         self.hasMouse = false;
         self.finmouseout(e);
     });
-    this.addEventListener('click', function(e) {
-        self.finclick(e);
-    });
     this.addEventListener('contextmenu', function(e) {
         self.fincontextmenu(e);
         e.preventDefault();
@@ -319,6 +316,9 @@ Canvas.prototype = {
     },
 
     finmousemove: function(e) {
+        var currentMouseLocation = this.getLocal(e);
+        // var hasMoved = !(this.mouseLocation.x === currentMouseLocation.x && this.mouseLocation.y === currentMouseLocation.y);
+
         if (!this.isDragging() && this.mousedown) {
             this.beDragging();
             this.dispatchNewMouseKeysEvent(e, 'fin-canvas-dragstart', {
@@ -327,7 +327,7 @@ Canvas.prototype = {
             });
             this.dragstart = new rectangular.Point(this.mouseLocation.x, this.mouseLocation.y);
         }
-        this.mouseLocation = this.getLocal(e);
+        this.mouseLocation = currentMouseLocation;
         //console.log(this.mouseLocation);
         if (this.isDragging()) {
             this.dispatchNewMouseKeysEvent(e, 'fin-canvas-drag', {
@@ -369,23 +369,52 @@ Canvas.prototype = {
             isRightClick: this.isRightClick(e)
         });
         this.takeFocus();
+
+        // register a click
+        this.finclick(e);
     },
 
     finmouseup: function(e) {
-        if (this.isDragging()) {
-            this.dispatchNewMouseKeysEvent(e, 'fin-canvas-dragend', {
-                dragstart: this.dragstart,
-                isRightClick: this.isRightClick(e)
-            });
-            this.beNotDragging();
-            this.dragEndtime = Date.now();
-        }
-        this.mousedown = false;
-        this.dispatchNewMouseKeysEvent(e, 'fin-canvas-mouseup', {
+        const doubleClickDetected = this.doubleClickDetected;
+        const isDragging = this.isDragging();
+
+        // Send main actions events
+        if(doubleClickDetected && !isDragging) {
+          this.findblclick(e);
+
+        } else if (!this.doubleClickDetected && this.isDragging()) {
+          this.dispatchNewMouseKeysEvent(e, 'fin-canvas-dragend', {
             dragstart: this.dragstart,
             isRightClick: this.isRightClick(e)
-        });
+          });
+
+        }
+
+        // send mouse up events with details
+        var finCanvasMouseupDetails = (doubleClickDetected && isDragging)
+          ? {
+            dragstart: this.dragstart,
+            isRightClick: this.isRightClick(e),
+            executeDblClick: this.findblclick.bind(this, e)
+          } : {
+            dragstart: this.dragstart,
+            isRightClick: this.isRightClick(e)
+          };
+
+        this.dispatchNewMouseKeysEvent(e, 'fin-canvas-mouseup', finCanvasMouseupDetails);
         //this.mouseLocation = new rectangular.Point(-1, -1);
+
+        // Cleanup control vars
+        this.mousedown = false;
+
+        if (doubleClickDetected) {
+            this.doubleClickDetected = false;
+        }
+
+        if (isDragging) {
+          this.beNotDragging();
+          this.dragEndtime = Date.now();
+        }
     },
 
     finmouseout: function(e) {
@@ -417,7 +446,7 @@ Canvas.prototype = {
             //this is a double click...
             clearTimeout(this.doubleClickTimer); // prevent click event
             this.doubleClickTimer = undefined;
-            this.findblclick(e);
+            this.doubleClickDetected = true;
         } else {
             this.lastClickTime = Date.now();
             this.doubleClickTimer = setTimeout(dispatchClickEvent.bind(this, e), delay);
