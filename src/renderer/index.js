@@ -837,6 +837,7 @@ var Renderer = Base.extend('Renderer', {
         }
 
         var gridProps = this.properties;
+
         vcOrigin = vcOrigin || this.visibleColumns[gridProps.fixedColumnCount];
         vrOrigin = vrOrigin || this.visibleRows[gridProps.fixedRowCount];
         vcCorner = vcCorner || (selection.corner.x > lastColumn.columnIndex ? lastColumn : vci[gridProps.fixedColumnCount - 1]);
@@ -851,8 +852,10 @@ var Renderer = Base.extend('Renderer', {
                 height: vrCorner.bottom - vrOrigin.top
             },
             selectionRegionOverlayColor: this.gridRenderer.paintCells.partial ? 'transparent' : gridProps.selectionRegionOverlayColor,
-            selectionRegionOutlineColor: gridProps.selectionRegionOutlineColor
+            selectionRegionOutlineColor: gridProps.selectionRegionOutlineColor,
+            selection: selection
         };
+
         this.grid.cellRenderers.get('lastselection').paint(gc, config);
         if (this.gridRenderer.paintCells.key === 'by-cells') {
             this.gridRenderer.reset = true; // fixes GRID-490
