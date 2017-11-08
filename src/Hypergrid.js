@@ -555,8 +555,10 @@ var Hypergrid = Base.extend('Hypergrid', {
      */
     setHoverCell: function(cellEvent) {
         var hoverCell = this.hoverCell;
-        if (!hoverCell || !hoverCell.equals(cellEvent.gridCell)) {
-            this.hoverCell = cellEvent.gridCell;
+
+        // use dataCell instead of gridCell because scrolling does not update gridCell properly for this
+        if (!hoverCell || !hoverCell.equals(cellEvent.dataCell)) {
+            this.hoverCell = cellEvent.dataCell;
             if (hoverCell) {
                 this.fireSyntheticOnCellExitEvent(cellEvent);
             }
@@ -1310,6 +1312,19 @@ var Hypergrid = Base.extend('Hypergrid', {
     },
 
     /**
+     * @description Get bounds of a cell using the coordinates from dataCell (full matrix of cells instead of only rendered ones).
+     * @memberOf Hypergrid#
+     * @param {Point} dataCell - Data cell with x and y coordinates
+     * @returns {Rectangle} Bounding rect of cell with the given coordinates (if rendered inside viewport)
+     */
+    getBoundsOfDataCell: function(dataCell) {
+        var b = this.renderer.getBoundsOfDataCell(dataCell.x, dataCell.y);
+
+        //convert to a proper rectangle
+        return new Rectangle(b.x, b.y, b.width, b.height);
+    },
+
+    /**
      * @memberOf Hypergrid#
      * @desc This is called by the fin-canvas when a resize occurs.
      */
@@ -1390,6 +1405,7 @@ var Hypergrid = Base.extend('Hypergrid', {
             setTimeout(function() {
                 // self.sbVRangeAdapter.subjectChanged();
                 self.fireScrollEvent('fin-scroll-y', oldY, y);
+                self.canvas.forceMouseHoverUpdate();
             });
         }
     },
@@ -1418,6 +1434,7 @@ var Hypergrid = Base.extend('Hypergrid', {
             setTimeout(function() {
                 //self.sbHRangeAdapter.subjectChanged();
                 self.fireScrollEvent('fin-scroll-x', oldX, x);
+                self.canvas.forceMouseHoverUpdate();
                 //self.synchronizeScrollingBoundries(); // todo: Commented off to prevent the grid from bouncing back, but there may be repurcussions...
             });
         }

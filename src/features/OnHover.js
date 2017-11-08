@@ -14,7 +14,9 @@ var OnHover = Feature.extend('OnHover', {
      */
     handleMouseMove: function(grid, event) {
         var hoverCell = grid.hoverCell;
-        if (!event.gridCell.equals(hoverCell)) {
+
+        // use dataCell instead of gridCell because scrolling does not update gridCell properly for this
+        if (!event.dataCell.equals(hoverCell)) {
             if (hoverCell) {
                 this.handleMouseExit(grid, hoverCell);
             }

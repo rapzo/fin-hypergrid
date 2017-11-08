@@ -517,6 +517,34 @@ var Renderer = Base.extend('Renderer', {
     },
 
     /**
+     * @description Get bounds of a cell using the coordinates from dataCell (full matrix of cells instead of only rendered ones).
+     * @memberOf Renderer.prototype
+     * @param {number} x - Data cell's column coordinate.
+     * @param {number} y - Data cell's row coordinate.
+     * @returns {Object} Rendered dimensions and position of cell (if rendered inside viewport)
+     */
+    getBoundsOfDataCell: function(x, y) {
+        var offsetX = this.getScrollLeft(),
+            offsetY = this.getScrollTop(),
+            finalX = x - offsetX,
+            finalY = y - offsetY + 1, // +1 from row headers
+            vc = this.visibleColumns[finalX],
+            vr = this.visibleRows[finalY];
+
+        // not visible right now
+        if (!vc || !vr) {
+            return null;
+        }
+
+        return {
+            x: vc.left,
+            y: vr.top,
+            width: vc.width,
+            height: vr.height
+        };
+    },
+
+    /**
      * @memberOf Renderer.prototype
      * @desc answer the column index under the coordinate at pixelX
      * @param {number} pixelX - The horizontal coordinate.

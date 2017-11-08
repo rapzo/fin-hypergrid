@@ -339,21 +339,28 @@ Canvas.prototype = {
         }
     },
 
+    // force mouse hover to be updated on scroll, using the previous mouse position saved in this.mouseLocation
+    forceMouseHoverUpdate: function() {
+        if (this.bounds.contains(this.mouseLocation)) {
+            this.dispatchNewMouseKeysEvent({}, 'fin-canvas-mousemove');
+        }
+    },
+
     finmousedown: function(e) {
         // remove special keys from the current keys
-        const SHIFT_KEY = !e.shiftKey ? charMap[16] : [],
+        var SHIFT_KEY = !e.shiftKey ? charMap[16] : [],
             CTRL_KEY = !e.ctrlKey ? charMap[17] : [],
             ALT_KEY = !e.altKey ? charMap[18] : [],
             META_KEY_1 = !e.metaKey ? charMap[91] : [],
             META_KEY_2 = !e.metaKey ? charMap[93] : [];
 
-        const keysToRemove = this.currentKeys && this.currentKeys.length
+        var keysToRemove = this.currentKeys && this.currentKeys.length
             ? SHIFT_KEY.concat(CTRL_KEY, ALT_KEY, META_KEY_1, META_KEY_2)
             : [];
 
-        const self = this;
+        var self = this;
         keysToRemove.forEach(function(key) {
-            const keyFound = self.currentKeys.indexOf(key);
+            var keyFound = self.currentKeys.indexOf(key);
 
             if (keyFound !== -1) {
                 self.currentKeys.splice(keyFound, 1);
@@ -374,11 +381,11 @@ Canvas.prototype = {
     },
 
     finmouseup: function(e) {
-        const doubleClickDetected = this.doubleClickDetected;
-        const isDragging = this.isDragging();
+        var doubleClickDetected = this.doubleClickDetected,
+            isDragging = this.isDragging();
 
         // Send main actions events
-        if(doubleClickDetected && !isDragging) {
+        if (doubleClickDetected && !isDragging) {
           this.findblclick(e);
 
         } else if (!this.doubleClickDetected && this.isDragging()) {
@@ -480,6 +487,8 @@ Canvas.prototype = {
     },
 
     finkeydown: function(e) {
+        var keyChar = this.getKeyChar(e);
+
         if (this.currentKeys.indexOf(keyChar) === -1) {
           this.currentKeys.push(keyChar);
         }
@@ -493,7 +502,6 @@ Canvas.prototype = {
             e.preventDefault();
         }
 
-        var keyChar = this.getKeyChar(e);
         if (e.repeat) {
             if (this.repeatKey === keyChar) {
                 this.repeatKeyCount++;
