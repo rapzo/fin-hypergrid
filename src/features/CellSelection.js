@@ -74,12 +74,12 @@ var CellSelection = Feature.extend('CellSelection', {
     handleMouseUp: function(grid, event) {
         // In case it is a double click with drag, check if the start position
         // and the actual position belongs to the same cell
-        const selections = grid.getSelectionMatrix() || [];
-        const numberOfSelections = selections.length;
-        const lastSelection = numberOfSelections ? selections[numberOfSelections - 1] : [];
-        const numberOfCellsInTheLastSelection = lastSelection.length;
-        const hasOnlyOneSelectedCell = numberOfSelections === 1 && numberOfCellsInTheLastSelection === 1;
-        const executeDblClick = event.primitiveEvent.detail.executeDblClick;
+        var selections = grid.getSelectionMatrix() || [],
+            numberOfSelections = selections.length,
+            lastSelection = numberOfSelections ? selections[numberOfSelections - 1] : [],
+            numberOfCellsInTheLastSelection = lastSelection.length,
+            hasOnlyOneSelectedCell = numberOfSelections === 1 && numberOfCellsInTheLastSelection === 1,
+            executeDblClick = event.primitiveEvent.detail.executeDblClick;
 
         if (hasOnlyOneSelectedCell && executeDblClick) {
           executeDblClick();

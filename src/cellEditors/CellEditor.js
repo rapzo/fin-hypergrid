@@ -338,7 +338,7 @@ var CellEditor = Base.extend('CellEditor', {
      * Remove input element from DOM (events associated to the element should be also be removed)
      * @memberOf CellEditor.prototype
      */
-    destroy() {
+    destroy: function() {
         this.el.remove();
     },
 
@@ -486,7 +486,7 @@ var CellEditor = Base.extend('CellEditor', {
         if (cellProps.selectAllOnEditorFocus) {
             this.selectAll();
         } else {
-            this.moveCaretToEnd()
+            this.moveCaretToEnd();
         }
 
         el.style.left = leftWas;
